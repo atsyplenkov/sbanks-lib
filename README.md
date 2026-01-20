@@ -1,7 +1,7 @@
 # Sbanks Core
 
 <p align="center">
-     <a href="https://github.com/atsyplenkov/sbanks-lib/.github/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/atsyplenkov/sbanks-lib/ci.yml?style=flat&labelColor=1C2C2E&color=88AB26&logo=GitHub%20Actions&logoColor=white&label=CI"></a>
+     <a href="https://github.com/atsyplenkov/sbanks-lib/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/atsyplenkov/sbanks-lib/ci.yml?style=flat&labelColor=1C2C2E&color=88AB26&logo=GitHub%20Actions&logoColor=white&label=CI"></a>
      <a href="https://pypi.org/project/sbanks-core/"><img src="https://img.shields.io/pypi/v/sbanks-core?style=flat&labelColor=1C2C2E&color=88AB26&logo=Python&logoColor=white"></a>
 </p>
 

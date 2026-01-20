@@ -9,16 +9,9 @@ A pure Python library providing GIS-agnostic implementations of geometry smoothi
 
 > Placeholder for performance plot or demo
 
-## Features
-
-* **Whittaker-Eilers Smoother**: Robust smoothing with support for unevenly spaced data (distance-aware).
-* **Savitzky-Golay Filter**: Traditional polynomial smoothing for evenly spaced data.
-* **Geometry Utilities**: Tools for coordinate processing, including Haversine distance calculations and ring padding.
-* **GIS Agnostic**: Built on `numpy` and `scipy`, usable in any Python environment independent of QGIS or ArcPy.
-
 ## Installation
 
-### From PyPI ()
+### From PyPI (⚠️ NOT YET AVAILABLE)
 ```bash
 pip install sbanks-core
 ```
@@ -51,6 +44,26 @@ smoothed_coords = resample_and_smooth(
 )
 
 ```
+
+## Performance
+
+This library provides a **pure Python implementation** of smoothing algorithms using only `numpy` and `scipy`. This makes it easy to install and use in any Python environment without compilation or binary dependencies (like QGIS and ArcPro). This is especially the case for the Whittaker-Eilers, which has already have a nice Python implementation with Rust core ([`whittaker-eilers`](https://pypi.org/project/whittaker-eilers/)).
+
+Therefore, **for performance-critical applications**, consider using the [`whittaker-eilers`](https://pypi.org/project/whittaker-eilers/) package, which offers significantly faster smoothing operations (see benches below).
+
+| Data Length | Metric         | sbanks (ms) | whittaker-eilers (ms) |
+|-------------|----------------|------------:|----------------------:|
+| n=100       | Initialization |       1.289 |                 0.194 |
+|             | Smoothing      |       0.187 |                 0.011 |
+|             | **Total**      |   **1.477** |             **0.205** |
+| n=1,000     | Initialization |       1.329 |                 0.562 |
+|             | Smoothing      |       1.012 |                 0.095 |
+|             | **Total**      |   **2.341** |             **0.657** |
+| n=10,000    | Initialization |       2.877 |                 6.473 |
+|             | Smoothing      |       9.089 |                 0.979 |
+|             | **Total**      |  **11.966** |             **7.453** |
+
+*Benchmarks run on Intel Core i7-10710U @ 3.50GHz, 16GB RAM, Python 3.12.3. Lambda=10000, order=2.*
 
 ## License
 This code is open-source and licensed under the GPL-2.0+ license.

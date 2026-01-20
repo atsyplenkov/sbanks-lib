@@ -16,6 +16,7 @@ dependencies = [
     "numpy>=1.20.0",
     "scipy>=1.7.0",
 ]
+
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -30,6 +31,12 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "whittaker-eilers>=0.1.0",
+]
+
 [project.urls]
 Homepage = "https://github.com/atsyplenkov/sbanks-lib"
 Repository = "https://github.com/atsyplenkov/sbanks-lib"
@@ -37,3 +44,6 @@ Repository = "https://github.com/atsyplenkov/sbanks-lib"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
+markers = [
+    "benchmark: speed comparison tests (skip in CI)",
+]

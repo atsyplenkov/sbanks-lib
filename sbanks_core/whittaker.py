@@ -64,19 +64,21 @@ class WhittakerSmoother:
         d = self.order
 
         if n <= d:
-            return sparse.eye(n, format='csc')
+            return sparse.eye(n, format="csc")
 
         if self.x_input is None:
             # Uniform spacing: standard finite differences
             e = np.ones(n)
-            D = sparse.diags([e[:-1], -e[:-1]], [0, 1], shape=(n - 1, n), format='csc')
+            D = sparse.diags([e[:-1], -e[:-1]], [0, 1], shape=(n - 1, n), format="csc")
             for _ in range(1, d):
                 m = D.shape[0]
                 if m <= 1:
                     break
                 D_next = sparse.diags(
-                    [np.ones(m - 1), -np.ones(m - 1)], [0, 1],
-                    shape=(m - 1, m), format='csc'
+                    [np.ones(m - 1), -np.ones(m - 1)],
+                    [0, 1],
+                    shape=(m - 1, m),
+                    format="csc",
                 )
                 D = D_next @ D
             return D
@@ -85,16 +87,17 @@ class WhittakerSmoother:
             h = np.diff(self.x_input)
             h[h == 0] = 1e-10  # Avoid division by zero
             D = sparse.diags(
-                [-1.0 / h, 1.0 / h], [0, 1],
-                shape=(n - 1, n), format='csc'
+                [-1.0 / h, 1.0 / h], [0, 1], shape=(n - 1, n), format="csc"
             )
             for _ in range(1, d):
                 m = D.shape[0]
                 if m <= 1:
                     break
                 D_next = sparse.diags(
-                    [np.ones(m - 1), -np.ones(m - 1)], [0, 1],
-                    shape=(m - 1, m), format='csc'
+                    [np.ones(m - 1), -np.ones(m - 1)],
+                    [0, 1],
+                    shape=(m - 1, m),
+                    format="csc",
                 )
                 D = D_next @ D
             return D
@@ -109,7 +112,7 @@ class WhittakerSmoother:
             Sparse coefficient matrix for the linear system
         """
         n = self.data_length
-        I = sparse.eye(n, format='csc')
+        I = sparse.eye(n, format="csc")
         D = self._build_difference_matrix()
         return (I + self.lmbda * D.T @ D).tocsc()
 

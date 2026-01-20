@@ -38,7 +38,10 @@ def haversine_distance(lon1, lat1, lon2, lat2):
     dlon = lon2_rad - lon1_rad
     dlat = lat2_rad - lat1_rad
 
-    a = np.sin(dlat / 2) ** 2 + np.cos(lat1_rad) * np.cos(lat2_rad) * np.sin(dlon / 2) ** 2
+    a = (
+        np.sin(dlat / 2) ** 2
+        + np.cos(lat1_rad) * np.cos(lat2_rad) * np.sin(dlon / 2) ** 2
+    )
     c = 2 * np.arcsin(np.sqrt(a))
 
     return R * c
@@ -71,10 +74,12 @@ def calculate_cumulative_distances(x, y, is_geographic=False):
 
     if is_geographic:
         # Use Haversine formula for geographic CRS
-        distances = np.array([
-            haversine_distance(x[i], y[i], x[i + 1], y[i + 1])
-            for i in range(len(x) - 1)
-        ])
+        distances = np.array(
+            [
+                haversine_distance(x[i], y[i], x[i + 1], y[i + 1])
+                for i in range(len(x) - 1)
+            ]
+        )
     else:
         # Use Cartesian distance for projected CRS
         distances = np.sqrt(np.diff(x) ** 2 + np.diff(y) ** 2)
@@ -114,7 +119,7 @@ def apply_antihook_padding(x, y, distances, pad_count):
     # Direction at start
     dx_s = x[1] - x[0]
     dy_s = y[1] - y[0]
-    d_s = np.sqrt(dx_s ** 2 + dy_s ** 2)
+    d_s = np.sqrt(dx_s**2 + dy_s**2)
     if d_s > 0:
         dx_s /= d_s
         dy_s /= d_s
@@ -124,7 +129,7 @@ def apply_antihook_padding(x, y, distances, pad_count):
     # Direction at end
     dx_e = x[-1] - x[-2]
     dy_e = y[-1] - y[-2]
-    d_e = np.sqrt(dx_e ** 2 + dy_e ** 2)
+    d_e = np.sqrt(dx_e**2 + dy_e**2)
     if d_e > 0:
         dx_e /= d_e
         dy_e /= d_e
@@ -139,9 +144,15 @@ def apply_antihook_padding(x, y, distances, pad_count):
     rng_fwd = np.arange(1, pad_count + 1)
 
     # Extend arrays
-    x_ext = np.concatenate([x[0] - dx_s * avg_seg * rng_back, x, x[-1] + dx_e * avg_seg * rng_fwd])
-    y_ext = np.concatenate([y[0] - dy_s * avg_seg * rng_back, y, y[-1] + dy_e * avg_seg * rng_fwd])
-    d_ext = np.concatenate([-avg_seg * rng_back, distances, distances[-1] + avg_seg * rng_fwd])
+    x_ext = np.concatenate(
+        [x[0] - dx_s * avg_seg * rng_back, x, x[-1] + dx_e * avg_seg * rng_fwd]
+    )
+    y_ext = np.concatenate(
+        [y[0] - dy_s * avg_seg * rng_back, y, y[-1] + dy_e * avg_seg * rng_fwd]
+    )
+    d_ext = np.concatenate(
+        [-avg_seg * rng_back, distances, distances[-1] + avg_seg * rng_fwd]
+    )
 
     return x_ext, y_ext, d_ext
 
@@ -178,11 +189,13 @@ def apply_ring_padding(x, y, distances, pad_count, total_perimeter):
     # Prepend last pad_count points (with shifted distances)
     x_ext = np.concatenate([x[-pad_count:], x, x[:pad_count]])
     y_ext = np.concatenate([y[-pad_count:], y, y[:pad_count]])
-    d_ext = np.concatenate([
-        distances[-pad_count:] - total_perimeter,
-        distances,
-        distances[:pad_count] + total_perimeter
-    ])
+    d_ext = np.concatenate(
+        [
+            distances[-pad_count:] - total_perimeter,
+            distances,
+            distances[:pad_count] + total_perimeter,
+        ]
+    )
 
     return x_ext, y_ext, d_ext
 

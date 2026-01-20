@@ -105,6 +105,6 @@ def smooth_closed_geometry(x, y, window_length, polyorder):
         return x.copy(), y.copy()
 
     return (
-        savgol_filter(x, window_length, polyorder, mode='wrap'),
-        savgol_filter(y, window_length, polyorder, mode='wrap')
+        savgol_filter(x, window_length, polyorder, mode="wrap"),
+        savgol_filter(y, window_length, polyorder, mode="wrap"),
     )

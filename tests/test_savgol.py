@@ -2,7 +2,6 @@
 """Tests for the Savitzky-Golay filter wrappers."""
 
 import numpy as np
-import pytest
 from sbanks_core.savgol import smooth_open_geometry, smooth_closed_geometry
 
 

@@ -112,9 +112,9 @@ class WhittakerSmoother:
             Sparse coefficient matrix for the linear system
         """
         n = self.data_length
-        I = sparse.eye(n, format="csc")
+        identity_mat = sparse.eye(n, format="csc")
         D = self._build_difference_matrix()
-        return (I + self.lmbda * D.T @ D).tocsc()
+        return (identity_mat + self.lmbda * D.T @ D).tocsc()
 
     def smooth(self, y):
         """

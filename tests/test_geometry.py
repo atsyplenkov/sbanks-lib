@@ -2,7 +2,6 @@
 """Tests for geometry utility functions."""
 
 import numpy as np
-import pytest
 from sbanks_core.geometry import (
     haversine_distance,
     calculate_cumulative_distances,

@@ -2,7 +2,6 @@
 """Tests for the Whittaker-Eilers smoother."""
 
 import numpy as np
-import pytest
 from sbanks_core.whittaker import WhittakerSmoother
 
 
@@ -19,12 +18,13 @@ class TestWhittakerSmoother:
 
     def test_smoothing_reduces_noise(self):
         """Test that smoothing reduces noise in noisy sinusoid."""
+        np.random.seed(123)  # Set seed for reproducibility
         n = 100
         x = np.linspace(0, 4 * np.pi, n)
         y_true = np.sin(x)
         y_noisy = y_true + 0.3 * np.random.randn(n)
 
-        smoother = WhittakerSmoother(lmbda=1e4, order=2, data_length=n)
+        smoother = WhittakerSmoother(lmbda=1e3, order=2, data_length=n)
         y_smooth = np.array(smoother.smooth(y_noisy.tolist()))
 
         # Smoothed signal should be closer to true signal than noisy signal

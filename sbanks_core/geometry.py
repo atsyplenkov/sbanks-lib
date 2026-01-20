@@ -230,9 +230,10 @@ def resample_and_smooth(x, y, delta_s, smoothing_factor=1.0):
     if total < delta_s:
         return x, y
 
-    # Fit spline
+    # Fit spline (k must be less than the number of points)
+    k = min(3, len(x) - 1)
     try:
-        tck, _ = splprep([x, y], s=smoothing_factor * len(x), k=3)
+        tck, _ = splprep([x, y], s=smoothing_factor * len(x), k=k)
     except Exception:
         return x, y
 

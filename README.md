@@ -67,7 +67,7 @@ Therefore, **for performance-critical applications**, consider using the [`whitt
 *Benchmarks run on Intel Core i7-10710U @ 3.50GHz, 16GB RAM, Python 3.12.3. Lambda=10000, order=2.*
 
 ## License
-This code is open-source and licensed under the GPL-2.0+ license.
+This code is open-source and licensed under the GPL-3.0 or later license.
 
 ## Acknowledgements
 Portions of the smoothing logic were inspired by [**Zoltán Sylvester's**](https://github.com/zsylvester) work on river meandering and the [channelmapper](https://github.com/zsylvester/channelmapper) repository.

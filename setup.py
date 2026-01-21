@@ -7,7 +7,7 @@ setup(
     name="sbanks-core",
     version="0.1.0",
     author="Anatoly Tsyplenkov",
-    author_email="atsyplenkov@geogr.msu.ru",
+    author_email="hard.sign9115@fastmail.com",
     description="Pure Python geometry smoothing algorithms",
     long_description=open("README.md").read()
     if __import__("os").path.exists("README.md")
@@ -21,16 +21,17 @@ setup(
         "scipy>=1.7.0",
     ],
     classifiers=[
-        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Scientific/Engineering :: GIS",
     ],
 )

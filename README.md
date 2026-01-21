@@ -6,7 +6,7 @@
      <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
 </p>
 
-A pure Python library providing GIS-agnostic implementations of geometry smoothing algorithms. It serves as the core computational backend for the [sbanks](https://github.com/atsyplenkov/sbanks-tools) QGIS and ArcGIS plugins, offering Whittaker-Eilers and Savitzky-Golay filtering with optional spline resampling.
+A pure Python library providing GIS-agnostic implementations of geometry smoothing algorithms. It serves as backend for the [sbanks](https://github.com/atsyplenkov/sbanks-tools) QGIS and ArcGIS plugins, offering Whittaker-Eilers and Savitzky-Golay filtering with optional spline resampling.
 
 > Placeholder for performance plot or demo
 
@@ -48,7 +48,7 @@ smoothed_coords = resample_and_smooth(
 
 ## Performance
 
-This library provides a **pure Python implementation** of smoothing algorithms using only `numpy` and `scipy`. This makes it easy to install and use in any Python environment without compilation or binary dependencies (like QGIS and ArcPro). This is especially the case for the Whittaker-Eilers, which has already have a nice Python implementation with Rust core ([`whittaker-eilers`](https://pypi.org/project/whittaker-eilers/)).
+This library provides a Python implementation of smoothing algorithms with minimal dependencies, using only `numpy` and `scipy`. This makes it easy to install and use in any Python environment without compilation or binary dependencies (like QGIS and ArcPro). It's even possible to install the lib or plugin inside extremely manageble environment (Apptainer/Docker). This is especially the case for the Whittaker-Eilers, which has already have a nice Python implementation with Rust core ([`whittaker-eilers`](https://pypi.org/project/whittaker-eilers/)).
 
 Therefore, **for performance-critical applications**, consider using the [`whittaker-eilers`](https://pypi.org/project/whittaker-eilers/) package, which offers significantly faster smoothing operations (see benches below).
 

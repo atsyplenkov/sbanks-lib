@@ -37,15 +37,11 @@ class TestNumericalAccuracy:
         n = len(y_noisy)
 
         # sbanks implementation
-        sbanks_smoother = WhittakerSmoother(
-            lmbda=lmbda, order=2, data_length=n
-        )
+        sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
         sbanks_result = np.array(sbanks_smoother.smooth(y_noisy.tolist()))
 
         # Reference implementation
-        ref_smoother = we.WhittakerSmoother(
-            lmbda=lmbda, order=2, data_length=n
-        )
+        ref_smoother = we.WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
         ref_result = np.array(ref_smoother.smooth(y_noisy.tolist()))
 
         np.testing.assert_allclose(sbanks_result, ref_result, rtol=1e-5)
@@ -58,15 +54,11 @@ class TestNumericalAccuracy:
         lmbda = 1e4
 
         # sbanks implementation
-        sbanks_smoother = WhittakerSmoother(
-            lmbda=lmbda, order=order, data_length=n
-        )
+        sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=order, data_length=n)
         sbanks_result = np.array(sbanks_smoother.smooth(y_noisy.tolist()))
 
         # Reference implementation
-        ref_smoother = we.WhittakerSmoother(
-            lmbda=lmbda, order=order, data_length=n
-        )
+        ref_smoother = we.WhittakerSmoother(lmbda=lmbda, order=order, data_length=n)
         ref_result = np.array(ref_smoother.smooth(y_noisy.tolist()))
 
         np.testing.assert_allclose(sbanks_result, ref_result, rtol=1e-5)
@@ -132,9 +124,7 @@ class TestEdgeCases:
         y = np.random.randn(n)
         lmbda = 1e2
 
-        sbanks_smoother = WhittakerSmoother(
-            lmbda=lmbda, order=2, data_length=n
-        )
+        sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
         sbanks_result = np.array(sbanks_smoother.smooth(y.tolist()))
 
         ref_smoother = we.WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
@@ -148,9 +138,7 @@ class TestEdgeCases:
         y = np.ones(n) * 7.5
         lmbda = 1e4
 
-        sbanks_smoother = WhittakerSmoother(
-            lmbda=lmbda, order=2, data_length=n
-        )
+        sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
         sbanks_result = np.array(sbanks_smoother.smooth(y.tolist()))
 
         ref_smoother = we.WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
@@ -165,9 +153,7 @@ class TestEdgeCases:
         np.random.seed(789)
         y = np.random.randn(n)
 
-        sbanks_smoother = WhittakerSmoother(
-            lmbda=0.0, order=2, data_length=n
-        )
+        sbanks_smoother = WhittakerSmoother(lmbda=0.0, order=2, data_length=n)
         sbanks_result = np.array(sbanks_smoother.smooth(y.tolist()))
 
         ref_smoother = we.WhittakerSmoother(lmbda=0.0, order=2, data_length=n)
@@ -196,15 +182,11 @@ class TestSpeedBenchmarks:
         # Benchmark sbanks initialization
         start = time.perf_counter()
         for _ in range(n_runs):
-            sbanks_smoother = WhittakerSmoother(
-                lmbda=lmbda, order=order, data_length=n
-            )
+            sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=order, data_length=n)
         sbanks_init_time = (time.perf_counter() - start) / n_runs * 1000
 
         # Benchmark sbanks smoothing
-        sbanks_smoother = WhittakerSmoother(
-            lmbda=lmbda, order=order, data_length=n
-        )
+        sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=order, data_length=n)
         start = time.perf_counter()
         for _ in range(n_runs):
             sbanks_smoother.smooth(y.tolist())
@@ -223,15 +205,19 @@ class TestSpeedBenchmarks:
             ref_smoother.smooth(y.tolist())
         ref_smooth_time = (time.perf_counter() - start) / n_runs * 1000
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Benchmark: n={n}, lambda={lmbda}, order={order}")
-        print(f"{'-'*60}")
+        print(f"{'-' * 60}")
         print(f"{'Metric':<25} {'sbanks (ms)':<15} {'reference (ms)':<15}")
-        print(f"{'-'*60}")
-        print(f"{'Initialization':<25} {sbanks_init_time:<15.3f} {ref_init_time:<15.3f}")
+        print(f"{'-' * 60}")
+        print(
+            f"{'Initialization':<25} {sbanks_init_time:<15.3f} {ref_init_time:<15.3f}"
+        )
         print(f"{'Smoothing':<25} {sbanks_smooth_time:<15.3f} {ref_smooth_time:<15.3f}")
-        print(f"{'Total':<25} {sbanks_init_time + sbanks_smooth_time:<15.3f} {ref_init_time + ref_smooth_time:<15.3f}")
-        print(f"{'='*60}")
+        print(
+            f"{'Total':<25} {sbanks_init_time + sbanks_smooth_time:<15.3f} {ref_init_time + ref_smooth_time:<15.3f}"
+        )
+        print(f"{'=' * 60}")
 
         # Test passes regardless of speed (informational only)
         assert True

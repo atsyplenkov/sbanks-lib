@@ -24,7 +24,7 @@ class TestHaversineDistance:
         """Test with a known distance (approximately)."""
         # London to Paris: ~344 km
         lon1, lat1 = -0.1276, 51.5074  # London
-        lon2, lat2 = 2.3522, 48.8566   # Paris
+        lon2, lat2 = 2.3522, 48.8566  # Paris
         dist = haversine_distance(lon1, lat1, lon2, lat2)
         # Allow 5% tolerance
         assert 320000 < dist < 360000

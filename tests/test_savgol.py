@@ -103,7 +103,7 @@ class TestSmoothClosedGeometry:
 
         # For a perfect circle, smoothing should not change much
         # Check that the result is still close to a circle
-        radii = np.sqrt(x_sm ** 2 + y_sm ** 2)
+        radii = np.sqrt(x_sm**2 + y_sm**2)
         assert np.std(radii) < 0.01  # Radii should be nearly constant
 
     def test_noise_reduction_closed(self):
@@ -116,6 +116,6 @@ class TestSmoothClosedGeometry:
         x_sm, y_sm = smooth_closed_geometry(x, y, window_length=11, polyorder=3)
 
         # Smoothed radii should have smaller variance
-        radii_noisy = np.sqrt(x ** 2 + y ** 2)
-        radii_smooth = np.sqrt(x_sm ** 2 + y_sm ** 2)
+        radii_noisy = np.sqrt(x**2 + y**2)
+        radii_smooth = np.sqrt(x_sm**2 + y_sm**2)
         assert np.std(radii_smooth) < np.std(radii_noisy)

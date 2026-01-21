@@ -3,6 +3,7 @@
 <p align="center">
      <a href="https://github.com/atsyplenkov/sbanks-lib/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/atsyplenkov/sbanks-lib/ci.yml?style=flat&labelColor=1C2C2E&color=88AB26&logo=GitHub%20Actions&logoColor=white&label=CI"></a>
      <a href="https://pypi.org/project/sbanks-core/"><img src="https://img.shields.io/pypi/v/sbanks-core?style=flat&labelColor=1C2C2E&color=88AB26&logo=Python&logoColor=white"></a>
+     <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
 </p>
 
 A pure Python library providing GIS-agnostic implementations of geometry smoothing algorithms. It serves as the core computational backend for the [sbanks](https://github.com/atsyplenkov/sbanks-tools) QGIS and ArcGIS plugins, offering Whittaker-Eilers and Savitzky-Golay filtering with optional spline resampling.

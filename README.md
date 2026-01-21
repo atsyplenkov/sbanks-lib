@@ -1,9 +1,9 @@
 # Sbanks Core
 
 <p align="center">
+     <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
      <a href="https://github.com/atsyplenkov/sbanks-lib/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/atsyplenkov/sbanks-lib/ci.yml?style=flat&labelColor=1C2C2E&color=88AB26&logo=GitHub%20Actions&logoColor=white&label=CI"></a>
      <a href="https://pypi.org/project/sbanks-core/"><img src="https://img.shields.io/pypi/v/sbanks-core?style=flat&labelColor=1C2C2E&color=88AB26&logo=Python&logoColor=white"></a>
-     <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
 </p>
 
 A pure Python library providing GIS-agnostic implementations of geometry smoothing algorithms. It serves as backend for the [sbanks](https://github.com/atsyplenkov/sbanks-tools) QGIS and ArcGIS plugins, offering Whittaker-Eilers and Savitzky-Golay filtering with optional spline resampling.
@@ -35,15 +35,16 @@ pip install .
 import numpy as np
 from sbanks_core import WhittakerSmoother, resample_and_smooth
 
-# Example usage for smoothing coordinate arrays
-coords = np.array([...])  # Your Nx2 array of coordinates
-smoothed_coords = resample_and_smooth(
-    coords,
-    method='whittaker',
-    lam=500,
-    sampling_interval=10.0
-)
+# Sample coordinates
+x = np.array([0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0])
+y = np.array([0.0, 5.2, 1.1, 6.3, 0.8, 4.9, 0.0])
 
+# Resample and smooth using spline interpolation
+x_smooth, y_smooth = resample_and_smooth(x, y, delta_s=5.0)
+
+# Or use the Whittaker smoother directly
+smoother = WhittakerSmoother(lam=10.0, d=2)
+y_smoothed = smoother.smooth(y)
 ```
 
 ## Performance

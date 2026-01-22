@@ -21,6 +21,7 @@ from .geometry import (
     apply_ring_padding,
     resample_and_smooth,
     snap_endpoints,
+    densify_geometry,
 )
 
 __all__ = [
@@ -33,4 +34,5 @@ __all__ = [
     "apply_ring_padding",
     "resample_and_smooth",
     "snap_endpoints",
+    "densify_geometry",
 ]

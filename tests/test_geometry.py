@@ -2,6 +2,7 @@
 """Tests for geometry utility functions."""
 
 import numpy as np
+import pytest
 from sbanks_core.geometry import (
     haversine_distance,
     calculate_cumulative_distances,
@@ -9,6 +10,7 @@ from sbanks_core.geometry import (
     apply_ring_padding,
     resample_and_smooth,
     snap_endpoints,
+    densify_geometry,
 )
 
 
@@ -234,3 +236,124 @@ class TestSnapEndpoints:
         # Modifying output should not affect input
         x_out[1] = 999.0
         assert x[1] == 1.0
+
+
+class TestDensifyGeometry:
+    """Test cases for densify_geometry function."""
+
+    def test_no_change_when_below_threshold(self):
+        """Short segments should not be modified."""
+        x = np.array([0.0, 1.0, 2.0])
+        y = np.array([0.0, 0.0, 0.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=5.0)
+
+        np.testing.assert_array_equal(x_dense, x)
+        np.testing.assert_array_equal(y_dense, y)
+
+    def test_densifies_long_segment(self):
+        """Long segments should have points inserted."""
+        x = np.array([0.0, 100.0])
+        y = np.array([0.0, 0.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=30.0)
+
+        # Segment of 100 with threshold 30 -> ceil(100/30) = 4 subdivisions -> 5 points
+        assert len(x_dense) == 5
+        assert len(y_dense) == 5
+
+    def test_preserves_original_vertices(self):
+        """Original points should be preserved."""
+        x = np.array([0.0, 50.0, 100.0])
+        y = np.array([0.0, 25.0, 0.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=20.0)
+
+        # Original vertices should still be in the output
+        assert x[0] in x_dense
+        assert x[1] in x_dense
+        assert x[2] in x_dense
+        # First and last should be exactly the same
+        assert x_dense[0] == x[0]
+        assert x_dense[-1] == x[-1]
+
+    def test_correct_point_count(self):
+        """Verify expected number of points inserted."""
+        # Single segment of length 100, threshold 25
+        # ceil(100/25) = 4 subdivisions -> 5 points total
+        x = np.array([0.0, 100.0])
+        y = np.array([0.0, 0.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=25.0)
+
+        assert len(x_dense) == 5
+        # Points should be evenly spaced: 0, 25, 50, 75, 100
+        np.testing.assert_array_almost_equal(x_dense, [0.0, 25.0, 50.0, 75.0, 100.0])
+
+    def test_mixed_segments(self):
+        """Test geometry with both short and long segments."""
+        # Three points: short segment (5), long segment (100)
+        x = np.array([0.0, 5.0, 105.0])
+        y = np.array([0.0, 0.0, 0.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=30.0)
+
+        # First segment (5) stays as-is: 2 points
+        # Second segment (100) gets subdivided: ceil(100/30) = 4 -> 4 new points
+        # Total: 1 (start) + 1 (mid) + 4 (subdivided second seg) = 6 points
+        assert len(x_dense) == 6
+
+    def test_single_point_passthrough(self):
+        """Single point should pass through unchanged."""
+        x = np.array([5.0])
+        y = np.array([10.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=1.0)
+
+        np.testing.assert_array_equal(x_dense, x)
+        np.testing.assert_array_equal(y_dense, y)
+
+    def test_two_points_exactly_at_threshold(self):
+        """Segment exactly at threshold should not be subdivided."""
+        x = np.array([0.0, 30.0])
+        y = np.array([0.0, 0.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=30.0)
+
+        # Segment length equals threshold, no subdivision
+        assert len(x_dense) == 2
+
+    def test_diagonal_segment(self):
+        """Test densification of diagonal segment."""
+        # Segment from (0,0) to (30,40) has length 50
+        x = np.array([0.0, 30.0])
+        y = np.array([0.0, 40.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=25.0)
+
+        # ceil(50/25) = 2 subdivisions -> 3 points
+        assert len(x_dense) == 3
+        # Midpoint should be at (15, 20)
+        np.testing.assert_array_almost_equal(x_dense, [0.0, 15.0, 30.0])
+        np.testing.assert_array_almost_equal(y_dense, [0.0, 20.0, 40.0])
+
+    def test_returns_numpy_arrays(self):
+        """Test that function returns numpy arrays."""
+        x = [0.0, 100.0, 200.0]
+        y = [0.0, 0.0, 0.0]
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=30.0)
+
+        assert isinstance(x_dense, np.ndarray)
+        assert isinstance(y_dense, np.ndarray)
+
+    def test_invalid_max_segment_length(self):
+        """Test that non-positive max_segment_length raises error."""
+        x = np.array([0.0, 100.0])
+        y = np.array([0.0, 0.0])
+
+        with pytest.raises(ValueError):
+            densify_geometry(x, y, max_segment_length=0.0)
+
+        with pytest.raises(ValueError):
+            densify_geometry(x, y, max_segment_length=-10.0)

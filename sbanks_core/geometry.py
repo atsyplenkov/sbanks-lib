@@ -269,3 +269,67 @@ def snap_endpoints(x_smooth, y_smooth, x_start, y_start, x_end, y_end):
     x_out[0], y_out[0] = x_start, y_start
     x_out[-1], y_out[-1] = x_end, y_end
     return x_out, y_out
+
+
+def densify_geometry(x, y, max_segment_length):
+    """
+    Densify geometry by adding points to segments exceeding max length.
+
+    Segments longer than max_segment_length will have intermediate points
+    inserted via linear interpolation. This is useful as a pre-processing
+    step for Savitzky-Golay smoothing to prevent spike artifacts on
+    geometries with uneven vertex density.
+
+    Parameters
+    ----------
+    x : array-like
+        X coordinates
+    y : array-like
+        Y coordinates
+    max_segment_length : float
+        Maximum allowed segment length. Segments longer than this
+        will have intermediate points inserted via linear interpolation.
+        Must be positive.
+
+    Returns
+    -------
+    tuple
+        (x_dense, y_dense) densified coordinates as numpy arrays.
+        Original vertices are always preserved.
+    """
+    x = np.asarray(x)
+    y = np.asarray(y)
+
+    if len(x) < 2:
+        return x.copy(), y.copy()
+
+    if max_segment_length <= 0:
+        raise ValueError("max_segment_length must be positive")
+
+    # Calculate segment lengths
+    dx = np.diff(x)
+    dy = np.diff(y)
+    segment_lengths = np.sqrt(dx**2 + dy**2)
+
+    # Build result arrays
+    x_dense = [x[0]]
+    y_dense = [y[0]]
+
+    for i in range(len(segment_lengths)):
+        seg_len = segment_lengths[i]
+
+        if seg_len > max_segment_length:
+            # Calculate number of subdivisions needed
+            n_subdivisions = int(np.ceil(seg_len / max_segment_length))
+            # Generate intermediate points via linear interpolation
+            t = np.linspace(0, 1, n_subdivisions + 1)[1:]  # Skip first (already added)
+            x_interp = x[i] + t * dx[i]
+            y_interp = y[i] + t * dy[i]
+            x_dense.extend(x_interp)
+            y_dense.extend(y_interp)
+        else:
+            # Just add the endpoint
+            x_dense.append(x[i + 1])
+            y_dense.append(y[i + 1])
+
+    return np.array(x_dense), np.array(y_dense)

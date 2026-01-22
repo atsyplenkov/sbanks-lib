@@ -9,8 +9,12 @@ smoothing to open (LineString) and closed (Polygon ring) geometries.
 import numpy as np
 from scipy.signal import savgol_filter
 
+from .geometry import densify_geometry
 
-def smooth_open_geometry(x, y, window_length, polyorder, pad_count=None):
+
+def smooth_open_geometry(
+    x, y, window_length, polyorder, pad_count=None, max_segment_length=None
+):
     """
     Apply Savitzky-Golay filter to open geometries with anti-hook extrapolation.
 
@@ -29,6 +33,11 @@ def smooth_open_geometry(x, y, window_length, polyorder, pad_count=None):
         Order of the polynomial used to fit samples
     pad_count : int, optional
         Number of points to pad at each end. Defaults to window_length.
+    max_segment_length : float, optional
+        If provided, densify sparse segments before smoothing.
+        Segments longer than this value will have points inserted
+        via linear interpolation. This prevents spike artifacts on
+        geometries with uneven vertex density.
 
     Returns
     -------
@@ -38,6 +47,10 @@ def smooth_open_geometry(x, y, window_length, polyorder, pad_count=None):
     """
     x = np.asarray(x)
     y = np.asarray(y)
+
+    # Optional densification
+    if max_segment_length is not None:
+        x, y = densify_geometry(x, y, max_segment_length)
 
     if len(x) < window_length:
         return x.copy(), y.copy()
@@ -75,7 +88,7 @@ def smooth_open_geometry(x, y, window_length, polyorder, pad_count=None):
     return x_sm, y_sm
 
 
-def smooth_closed_geometry(x, y, window_length, polyorder):
+def smooth_closed_geometry(x, y, window_length, polyorder, max_segment_length=None):
     """
     Apply Savitzky-Golay filter to closed geometries with wrap mode.
 
@@ -92,6 +105,11 @@ def smooth_closed_geometry(x, y, window_length, polyorder):
         Length of the filter window (must be odd and > polyorder)
     polyorder : int
         Order of the polynomial used to fit samples
+    max_segment_length : float, optional
+        If provided, densify sparse segments before smoothing.
+        Segments longer than this value will have points inserted
+        via linear interpolation. This prevents spike artifacts on
+        geometries with uneven vertex density.
 
     Returns
     -------
@@ -100,6 +118,10 @@ def smooth_closed_geometry(x, y, window_length, polyorder):
     """
     x = np.asarray(x)
     y = np.asarray(y)
+
+    # Optional densification
+    if max_segment_length is not None:
+        x, y = densify_geometry(x, y, max_segment_length)
 
     if len(x) < window_length:
         return x.copy(), y.copy()

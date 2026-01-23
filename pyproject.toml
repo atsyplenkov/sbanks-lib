@@ -10,7 +10,7 @@ name = "sbanks-core"
 version = "0.1.0"
 description = "Pure Python geometry smoothing algorithms"
 readme = "README.md"
-license = "GPL-3.0-or-later"
+license = { text = "GPL-3.0-or-later" }
 authors = [
     { name = "Anatoly Tsyplenkov", email = "hard.sign9115@fastmail.com" },
 ]

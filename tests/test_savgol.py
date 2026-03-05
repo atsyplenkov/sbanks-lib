@@ -235,7 +235,7 @@ class TestDensificationIntegration:
 
 
 class TestPipelineIntegration:
-    """Test cases for full open-geometry processing pipeline."""
+    """Test cases for full open- and closed-geometry processing pipelines."""
 
     def test_open_pipeline_exact_window_boundary(self):
         """Test open pipeline on geometry that densifies to exact window length."""

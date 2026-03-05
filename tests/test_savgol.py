@@ -2,6 +2,11 @@
 """Tests for the Savitzky-Golay filter wrappers."""
 
 import numpy as np
+from sbanks_core.geometry import (
+    densify_geometry,
+    resample_and_smooth,
+    snap_endpoints,
+)
 from sbanks_core.savgol import (
     smooth_open_geometry,
     smooth_closed_geometry,
@@ -227,3 +232,35 @@ class TestDensificationIntegration:
 
         # Should densify first, then be long enough to smooth
         assert len(x_sm) >= 5  # At least window_length points
+
+
+class TestPipelineIntegration:
+    """Test cases for full open-geometry processing pipeline."""
+
+    def test_open_pipeline_exact_window_boundary(self):
+        """Test open pipeline on geometry that densifies to exact window length."""
+        x = np.array([0.0, 4.0])
+        y = np.array([0.0, 0.0])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=1.0)
+        assert len(x_dense) == 5
+
+        x_sm, y_sm = smooth_open_geometry(
+            x_dense, y_dense, window_length=5, polyorder=2, max_segment_length=None
+        )
+        x_rs, y_rs = resample_and_smooth(x_sm, y_sm, delta_s=0.5)
+        x_snap, y_snap = snap_endpoints(x_rs, y_rs, x[0], y[0], x[-1], y[-1])
+
+        assert np.all(np.isfinite(x_dense))
+        assert np.all(np.isfinite(y_dense))
+        assert np.all(np.isfinite(x_sm))
+        assert np.all(np.isfinite(y_sm))
+        assert np.all(np.isfinite(x_rs))
+        assert np.all(np.isfinite(y_rs))
+        assert np.all(np.isfinite(x_snap))
+        assert np.all(np.isfinite(y_snap))
+
+        assert x_snap[0] == x[0]
+        assert y_snap[0] == y[0]
+        assert x_snap[-1] == x[-1]
+        assert y_snap[-1] == y[-1]

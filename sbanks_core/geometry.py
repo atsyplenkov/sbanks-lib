@@ -74,12 +74,17 @@ def calculate_cumulative_distances(x, y, is_geographic=False):
 
     if is_geographic:
         # Use Haversine formula for geographic CRS
-        distances = np.array(
-            [
-                haversine_distance(x[i], y[i], x[i + 1], y[i + 1])
-                for i in range(len(x) - 1)
-            ]
-        )
+        lon1 = np.radians(x[:-1])
+        lat1 = np.radians(y[:-1])
+        lon2 = np.radians(x[1:])
+        lat2 = np.radians(y[1:])
+
+        dlon = lon2 - lon1
+        dlat = lat2 - lat1
+
+        a = np.sin(dlat / 2) ** 2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon / 2) ** 2
+        c = 2 * np.arcsin(np.sqrt(a))
+        distances = 6371000 * c
     else:
         # Use Cartesian distance for projected CRS
         distances = np.sqrt(np.diff(x) ** 2 + np.diff(y) ** 2)

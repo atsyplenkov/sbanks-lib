@@ -248,6 +248,9 @@ class TestPipelineIntegration:
         x_sm, y_sm = smooth_open_geometry(
             x_dense, y_dense, window_length=5, polyorder=2, max_segment_length=None
         )
+        x_sm_raw, y_sm_raw = smooth_open_geometry(
+            x, y, window_length=5, polyorder=2, max_segment_length=1.0
+        )
         x_rs, y_rs = resample_and_smooth(x_sm, y_sm, delta_s=0.5)
         x_snap, y_snap = snap_endpoints(x_rs, y_rs, x[0], y[0], x[-1], y[-1])
 
@@ -255,12 +258,18 @@ class TestPipelineIntegration:
         assert np.all(np.isfinite(y_dense))
         assert np.all(np.isfinite(x_sm))
         assert np.all(np.isfinite(y_sm))
+        assert np.all(np.isfinite(x_sm_raw))
+        assert np.all(np.isfinite(y_sm_raw))
         assert np.all(np.isfinite(x_rs))
         assert np.all(np.isfinite(y_rs))
         assert np.all(np.isfinite(x_snap))
         assert np.all(np.isfinite(y_snap))
+        np.testing.assert_allclose(x_sm_raw, x_sm, rtol=0.0, atol=1e-12)
+        np.testing.assert_allclose(y_sm_raw, y_sm, rtol=0.0, atol=1e-12)
 
         assert x_snap[0] == x[0]
         assert y_snap[0] == y[0]
         assert x_snap[-1] == x[-1]
         assert y_snap[-1] == y[-1]
+        assert np.all(np.diff(x_snap) >= 0)
+        assert np.max(np.abs(y_snap)) < 1e-10

@@ -273,3 +273,24 @@ class TestPipelineIntegration:
         assert y_snap[-1] == y[-1]
         assert np.all(np.diff(x_snap) >= 0)
         assert np.max(np.abs(y_snap)) < 1e-10
+
+    def test_closed_pipeline_rotation_invariance_at_boundary(self):
+        """Test closed smoothing is rotation-invariant at the seam boundary."""
+        x = np.array([0.0, 4.0, 4.2])
+        y = np.array([0.0, 0.0, 0.2])
+
+        x_dense, y_dense = densify_geometry(x, y, max_segment_length=1.5)
+        assert len(x_dense) == 5
+
+        x_sm, y_sm = smooth_closed_geometry(x_dense, y_dense, window_length=5, polyorder=2)
+
+        x_roll = np.roll(x_dense, 1)
+        y_roll = np.roll(y_dense, 1)
+        x_sm_roll, y_sm_roll = smooth_closed_geometry(
+            x_roll, y_roll, window_length=5, polyorder=2
+        )
+
+        x_sm_unroll = np.roll(x_sm_roll, -1)
+        y_sm_unroll = np.roll(y_sm_roll, -1)
+        np.testing.assert_allclose(x_sm_unroll, x_sm, rtol=1e-7, atol=1e-9)
+        np.testing.assert_allclose(y_sm_unroll, y_sm, rtol=1e-7, atol=1e-9)

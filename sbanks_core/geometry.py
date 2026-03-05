@@ -220,12 +220,14 @@ def resample_and_smooth(x, y, delta_s, smoothing_factor=1.0):
     delta_s : float
         Target sampling distance
     smoothing_factor : float, optional
-        Smoothing factor for spline. Default is 1.0.
+        Absolute smoothing value passed to SciPy spline parameter ``s``.
+        Default is 1.0 (not scaled by point count).
 
     Returns
     -------
     tuple
         (x_new, y_new) resampled and smoothed coordinates as numpy arrays
+        If spline fitting fails, a RuntimeWarning is emitted and inputs are returned.
     """
     x = np.asarray(x)
     y = np.asarray(y)

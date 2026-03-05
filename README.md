@@ -47,6 +47,9 @@ smoother = WhittakerSmoother(lam=10.0, d=2)
 y_smoothed = smoother.smooth(y)
 ```
 
+- `smoothing_factor` is passed directly to SciPy's spline `s` parameter (absolute value, not scaled by point count).
+- If spline fitting fails, `resample_and_smooth` emits `RuntimeWarning` and returns the original input coordinates unchanged.
+
 ## Performance
 
 This library provides a Python implementation of smoothing algorithms with minimal dependencies, using only `numpy` and `scipy`. This makes it easy to install and use in any Python environment without compilation or binary dependencies (like QGIS and ArcPro). It's even possible to install the lib or plugin inside extremely manageble environment (Apptainer/Docker). This is especially the case for the Whittaker-Eilers, which has already have a nice Python implementation with Rust core ([`whittaker-eilers`](https://pypi.org/project/whittaker-eilers/)).

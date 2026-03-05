@@ -2,6 +2,7 @@
 """Tests for the Whittaker-Eilers smoother."""
 
 import numpy as np
+import pytest
 from sbanks_core.whittaker import WhittakerSmoother
 
 
@@ -93,3 +94,50 @@ class TestWhittakerSmoother:
         smoother = WhittakerSmoother(lmbda=1e4, order=2, data_length=n)
         y_smooth = np.array(smoother.smooth(y.tolist()))
         np.testing.assert_allclose(y_smooth, y, rtol=1e-10)
+
+    def test_smooth_returns_ndarray(self):
+        n = 20
+        y = np.random.randn(n)
+        smoother = WhittakerSmoother(lmbda=1e3, order=2, data_length=n)
+        y_smooth = smoother.smooth(y.tolist())
+        assert isinstance(y_smooth, np.ndarray)
+
+    def test_nonuniform_rejects_duplicate_x(self):
+        x = [0.0, 1.0, 1.0, 2.0]
+        with pytest.raises(ValueError, match="strictly increasing"):
+            WhittakerSmoother(lmbda=1e3, order=2, data_length=4, x_input=x)
+
+    def test_nonuniform_rejects_descending_x(self):
+        x = [0.0, 2.0, 1.5, 3.0]
+        with pytest.raises(ValueError, match="strictly increasing"):
+            WhittakerSmoother(lmbda=1e3, order=2, data_length=4, x_input=x)
+
+    def test_nonuniform_rejects_x_length_mismatch(self):
+        x = [0.0, 1.0, 2.0]
+        with pytest.raises(ValueError, match="length"):
+            WhittakerSmoother(lmbda=1e3, order=2, data_length=4, x_input=x)
+
+    def test_smooth_rejects_y_length_mismatch(self):
+        smoother = WhittakerSmoother(lmbda=1e3, order=2, data_length=5)
+        with pytest.raises(ValueError, match="length"):
+            smoother.smooth([1.0, 2.0, 3.0])
+
+    def test_nonuniform_rejects_non_1d_x(self):
+        x = [[0.0], [1.0], [2.0], [3.0]]
+        with pytest.raises(ValueError, match="1D"):
+            WhittakerSmoother(lmbda=1e3, order=2, data_length=4, x_input=x)
+
+    def test_nonuniform_rejects_nonfinite_x(self):
+        x = [0.0, 1.0, np.nan, 3.0]
+        with pytest.raises(ValueError, match="finite"):
+            WhittakerSmoother(lmbda=1e3, order=2, data_length=4, x_input=x)
+
+    def test_smooth_rejects_non_1d_y(self):
+        smoother = WhittakerSmoother(lmbda=1e3, order=2, data_length=4)
+        with pytest.raises(ValueError, match="1D"):
+            smoother.smooth([[1.0, 2.0], [3.0, 4.0]])
+
+    def test_smooth_rejects_nonfinite_y(self):
+        smoother = WhittakerSmoother(lmbda=1e3, order=2, data_length=4)
+        with pytest.raises(ValueError, match="finite"):
+            smoother.smooth([1.0, np.inf, 3.0, 4.0])

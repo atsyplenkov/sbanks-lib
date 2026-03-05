@@ -118,14 +118,24 @@ class TestSmoothOpenGeometry:
         with pytest.raises(ValueError, match="pad_count"):
             smooth_open_geometry(x, y, window_length=11, polyorder=3, pad_count=pad_count)
 
-    def test_short_open_passthrough_keeps_current_behavior_even_if_params_invalid(self):
+    def test_short_open_raises_for_invalid_params(self):
         x = np.array([0.0, 1.0, 2.0])
         y = np.array([0.0, 0.5, 0.0])
 
-        x_sm, y_sm = smooth_open_geometry(x, y, window_length=11, polyorder=11)
+        with pytest.raises(ValueError, match="polyorder"):
+            smooth_open_geometry(x, y, window_length=11, polyorder=11)
 
-        np.testing.assert_array_equal(x_sm, x)
-        np.testing.assert_array_equal(y_sm, y)
+    def test_open_invalid_params_raise_before_densification(self, monkeypatch):
+        def _fail_if_called(*args, **kwargs):
+            raise AssertionError("densify_geometry should not run for invalid params")
+
+        monkeypatch.setattr("sbanks_core.savgol.densify_geometry", _fail_if_called)
+
+        x = np.array([0.0, 100.0])
+        y = np.array([0.0, 0.0])
+
+        with pytest.raises(ValueError, match="window_length"):
+            smooth_open_geometry(x, y, window_length=4, polyorder=2, max_segment_length=10.0)
 
     def test_open_uneven_spacing_fixture_has_stable_output_bounds(self):
         x = np.array([0.0, 1.0, 2.0, 100.0, 101.0, 102.0])
@@ -222,14 +232,26 @@ class TestSmoothClosedGeometry:
         with pytest.raises(ValueError, match="polyorder"):
             smooth_closed_geometry(x, y, window_length=11, polyorder=polyorder)
 
-    def test_short_closed_passthrough_keeps_current_behavior_even_if_params_invalid(self):
+    def test_short_closed_raises_for_invalid_params(self):
         x = np.array([0.0, 1.0, 0.0])
         y = np.array([0.0, 0.0, 1.0])
 
-        x_sm, y_sm = smooth_closed_geometry(x, y, window_length=11, polyorder=11)
+        with pytest.raises(ValueError, match="polyorder"):
+            smooth_closed_geometry(x, y, window_length=11, polyorder=11)
 
-        np.testing.assert_array_equal(x_sm, x)
-        np.testing.assert_array_equal(y_sm, y)
+    def test_closed_invalid_params_raise_before_densification(self, monkeypatch):
+        def _fail_if_called(*args, **kwargs):
+            raise AssertionError("densify_geometry should not run for invalid params")
+
+        monkeypatch.setattr("sbanks_core.savgol.densify_geometry", _fail_if_called)
+
+        x = np.array([0.0, 100.0, 100.0, 0.0])
+        y = np.array([0.0, 0.0, 100.0, 100.0])
+
+        with pytest.raises(ValueError, match="window_length"):
+            smooth_closed_geometry(
+                x, y, window_length=4, polyorder=2, max_segment_length=10.0
+            )
 
 
 class TestDensificationIntegration:

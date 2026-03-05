@@ -2,6 +2,7 @@
 """Tests for the Savitzky-Golay filter wrappers."""
 
 import numpy as np
+import pytest
 from sbanks_core.geometry import (
     densify_geometry,
     resample_and_smooth,
@@ -85,6 +86,63 @@ class TestSmoothOpenGeometry:
 
         np.testing.assert_array_equal(y1, y2)
 
+    @pytest.mark.parametrize("window_length", [0, -3, 10, 11.5, "11"])
+    def test_open_raises_for_invalid_window_length_values(self, window_length):
+        x = np.linspace(0, 10, 21)
+        y = np.sin(x)
+
+        with pytest.raises(ValueError, match="window_length"):
+            smooth_open_geometry(x, y, window_length=window_length, polyorder=3)
+
+    @pytest.mark.parametrize("polyorder", [-1, 11, 1.5, "3"])
+    def test_open_raises_for_invalid_polyorder_before_filter_invocation(
+        self, polyorder, monkeypatch
+    ):
+        def _fail_if_called(*args, **kwargs):
+            raise AssertionError(
+                "savgol_filter should not be called for invalid polyorder"
+            )
+
+        monkeypatch.setattr("sbanks_core.savgol.savgol_filter", _fail_if_called)
+        x = np.linspace(0, 10, 21)
+        y = np.sin(x)
+
+        with pytest.raises(ValueError, match="polyorder"):
+            smooth_open_geometry(x, y, window_length=11, polyorder=polyorder)
+
+    @pytest.mark.parametrize("pad_count", [-1, 0, 1.5, "2", True])
+    def test_open_raises_for_invalid_pad_count_values(self, pad_count):
+        x = np.linspace(0, 10, 21)
+        y = np.sin(x)
+
+        with pytest.raises(ValueError, match="pad_count"):
+            smooth_open_geometry(x, y, window_length=11, polyorder=3, pad_count=pad_count)
+
+    def test_short_open_passthrough_keeps_current_behavior_even_if_params_invalid(self):
+        x = np.array([0.0, 1.0, 2.0])
+        y = np.array([0.0, 0.5, 0.0])
+
+        x_sm, y_sm = smooth_open_geometry(x, y, window_length=11, polyorder=11)
+
+        np.testing.assert_array_equal(x_sm, x)
+        np.testing.assert_array_equal(y_sm, y)
+
+    def test_open_uneven_spacing_fixture_has_stable_output_bounds(self):
+        x = np.array([0.0, 1.0, 2.0, 100.0, 101.0, 102.0])
+        y = np.array([0.0, 0.5, 0.0, 0.0, 0.5, 0.0])
+
+        x_sm, y_sm = smooth_open_geometry(x, y, window_length=5, polyorder=3)
+
+        assert len(x_sm) == len(x)
+        assert len(y_sm) == len(y)
+        assert np.all(np.isfinite(x_sm))
+        assert np.all(np.isfinite(y_sm))
+        assert x_sm[0] == x[0]
+        assert y_sm[0] == y[0]
+        assert x_sm[-1] == x[-1]
+        assert y_sm[-1] == y[-1]
+        assert np.max(np.abs(y_sm)) < 2.0
+
 
 class TestSmoothClosedGeometry:
     """Test cases for smooth_closed_geometry function."""
@@ -137,6 +195,41 @@ class TestSmoothClosedGeometry:
         radii_noisy = np.sqrt(x**2 + y**2)
         radii_smooth = np.sqrt(x_sm**2 + y_sm**2)
         assert np.std(radii_smooth) < np.std(radii_noisy)
+
+    @pytest.mark.parametrize("window_length", [0, -3, 10, 11.5, "11"])
+    def test_closed_raises_for_invalid_window_length_values(self, window_length):
+        theta = np.linspace(0, 2 * np.pi, 24, endpoint=False)
+        x = np.cos(theta)
+        y = np.sin(theta)
+
+        with pytest.raises(ValueError, match="window_length"):
+            smooth_closed_geometry(x, y, window_length=window_length, polyorder=3)
+
+    @pytest.mark.parametrize("polyorder", [-1, 11, 1.5, "3"])
+    def test_closed_raises_for_invalid_polyorder_before_filter_invocation(
+        self, polyorder, monkeypatch
+    ):
+        def _fail_if_called(*args, **kwargs):
+            raise AssertionError(
+                "savgol_filter should not be called for invalid polyorder"
+            )
+
+        monkeypatch.setattr("sbanks_core.savgol.savgol_filter", _fail_if_called)
+        theta = np.linspace(0, 2 * np.pi, 24, endpoint=False)
+        x = np.cos(theta)
+        y = np.sin(theta)
+
+        with pytest.raises(ValueError, match="polyorder"):
+            smooth_closed_geometry(x, y, window_length=11, polyorder=polyorder)
+
+    def test_short_closed_passthrough_keeps_current_behavior_even_if_params_invalid(self):
+        x = np.array([0.0, 1.0, 0.0])
+        y = np.array([0.0, 0.0, 1.0])
+
+        x_sm, y_sm = smooth_closed_geometry(x, y, window_length=11, polyorder=11)
+
+        np.testing.assert_array_equal(x_sm, x)
+        np.testing.assert_array_equal(y_sm, y)
 
 
 class TestDensificationIntegration:

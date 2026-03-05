@@ -55,17 +55,17 @@ Therefore, **for performance-critical applications**, consider using the [`whitt
 
 | Data Length | Metric         | sbanks (ms) | whittaker-eilers (ms) |
 |-------------|----------------|------------:|----------------------:|
-| n=100       | Initialization |       1.289 |                 0.194 |
-|             | Smoothing      |       0.187 |                 0.011 |
-|             | **Total**      |   **1.477** |             **0.205** |
-| n=1,000     | Initialization |       1.329 |                 0.562 |
-|             | Smoothing      |       1.012 |                 0.095 |
-|             | **Total**      |   **2.341** |             **0.657** |
-| n=10,000    | Initialization |       2.877 |                 6.473 |
-|             | Smoothing      |       9.089 |                 0.979 |
-|             | **Total**      |  **11.966** |             **7.453** |
+| n=100       | Initialization |       0.981 |                 0.186 |
+|             | Smoothing      |       0.048 |                 0.014 |
+|             | **Total**      |   **1.029** |             **0.200** |
+| n=1,000     | Initialization |       2.085 |                 0.372 |
+|             | Smoothing      |       0.097 |                 0.099 |
+|             | **Total**      |   **2.182** |             **0.472** |
+| n=10,000    | Initialization |       8.739 |                 4.978 |
+|             | Smoothing      |       0.864 |                 0.712 |
+|             | **Total**      |   **9.604** |             **5.690** |
 
-*Benchmarks run on Intel Core i7-10710U @ 3.50GHz, 16GB RAM, Python 3.12.3. Lambda=10000, order=2.*
+*Benchmarks run via `pytest tests/test_whittaker_comparison.py -m benchmark -v -s` on Intel(R) Core(TM) i7-10710U CPU, 15 GiB RAM, Python 3.12.3. Lambda=10000, order=2.*
 
 ## License
 This code is open-source and licensed under the GPL-3.0 or later license.

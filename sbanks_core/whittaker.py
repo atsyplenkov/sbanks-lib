@@ -46,6 +46,16 @@ class WhittakerSmoother:
         self.order = order
         self.data_length = data_length
         self.x_input = np.asarray(x_input) if x_input is not None else None
+        if self.x_input is not None:
+            self.x_input = np.asarray(self.x_input, dtype=np.float64)
+            if self.x_input.ndim != 1:
+                raise ValueError("x_input must be a 1D array")
+            if not np.all(np.isfinite(self.x_input)):
+                raise ValueError("x_input must contain only finite values")
+            if len(self.x_input) != self.data_length:
+                raise ValueError("x_input length must match data_length")
+            if np.any(np.diff(self.x_input) <= 0):
+                raise ValueError("x_input must be strictly increasing")
         self._coef_matrix = self._build_coefficient_matrix()
         self._lu = splu(self._coef_matrix)
 
@@ -132,6 +142,10 @@ class WhittakerSmoother:
             Smoothed data as an array
         """
         y = np.asarray(y, dtype=np.float64)
+        if y.ndim != 1:
+            raise ValueError("Input y must be a 1D array")
+        if not np.all(np.isfinite(y)):
+            raise ValueError("Input y must contain only finite values")
         if len(y) != self.data_length:
             raise ValueError("Input y length must match data_length")
         return self._lu.solve(y)

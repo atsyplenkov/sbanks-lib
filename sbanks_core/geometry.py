@@ -8,6 +8,8 @@ This module provides GIS-agnostic geometry operations including:
 - Spline-based resampling
 """
 
+import warnings
+
 import numpy as np
 from scipy.interpolate import splprep, splev
 
@@ -238,8 +240,13 @@ def resample_and_smooth(x, y, delta_s, smoothing_factor=1.0):
     # Fit spline (k must be less than the number of points)
     k = min(3, len(x) - 1)
     try:
-        tck, _ = splprep([x, y], s=smoothing_factor * len(x), k=k)
-    except Exception:
+        tck, _ = splprep([x, y], s=smoothing_factor, k=k)
+    except Exception as exc:
+        warnings.warn(
+            f"resample_and_smooth spline fitting failed: {type(exc).__name__}: {exc}",
+            RuntimeWarning,
+            stacklevel=2,
+        )
         return x, y
 
     # Generate new parameter values based on desired spacing

@@ -34,7 +34,7 @@ class TestSmoothnessProperties:
         assume(params["lmbda"] > 0)
         assume(np.std(y) > 1e-6)  # Exclude near-constant signals
 
-        y_smooth = np.array(smoother_obj.smooth(y))
+        y_smooth = smoother_obj.smooth(y)
 
         var_original = np.var(y)
         var_smooth = np.var(y_smooth)
@@ -70,7 +70,7 @@ class TestGeometricInvariants:
         y = np.concatenate([[0], np.cumsum(increments)])
 
         smoother = WhittakerSmoother(lmbda=lmbda, order=order, data_length=len(y))
-        y_smooth = np.array(smoother.smooth(y))
+        y_smooth = smoother.smooth(y)
 
         # Check that result is weakly increasing (allowing numerical precision)
         diffs = np.diff(y_smooth)
@@ -104,7 +104,7 @@ class TestGeometricInvariants:
 
         y = np.full(n, value, dtype=np.float64)
         smoother = WhittakerSmoother(lmbda=lmbda, order=order, data_length=n)
-        y_smooth = np.array(smoother.smooth(y))
+        y_smooth = smoother.smooth(y)
 
         np.testing.assert_allclose(
             y_smooth,
@@ -134,7 +134,7 @@ class TestNumericalStability:
         assume(len(y) > order)
 
         smoother = WhittakerSmoother(lmbda=0, order=order, data_length=len(y))
-        y_smooth = np.array(smoother.smooth(y))
+        y_smooth = smoother.smooth(y)
 
         np.testing.assert_allclose(
             y_smooth,
@@ -176,7 +176,7 @@ class TestShapePreservation:
 
         # Smooth with very high lambda (should preserve linear trend)
         smoother = WhittakerSmoother(lmbda=1e7, order=order, data_length=n)
-        y_smooth = np.array(smoother.smooth(y))
+        y_smooth = smoother.smooth(y)
 
         # Fit line to smoothed result
         coeffs = np.polyfit(x, y_smooth, deg=1)
@@ -233,7 +233,7 @@ class TestShapePreservation:
         smoother_obj, y, params = smoother
         assume(len(y) > 5)
 
-        y_smooth = np.array(smoother_obj.smooth(y))
+        y_smooth = smoother_obj.smooth(y)
 
         mean_original = np.mean(y)
         mean_smooth = np.mean(y_smooth)

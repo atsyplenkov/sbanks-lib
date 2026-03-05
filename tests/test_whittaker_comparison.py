@@ -38,7 +38,7 @@ class TestNumericalAccuracy:
 
         # sbanks implementation
         sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
-        sbanks_result = np.array(sbanks_smoother.smooth(y_noisy.tolist()))
+        sbanks_result = sbanks_smoother.smooth(y_noisy)
 
         # Reference implementation
         ref_smoother = we.WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
@@ -55,7 +55,7 @@ class TestNumericalAccuracy:
 
         # sbanks implementation
         sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=order, data_length=n)
-        sbanks_result = np.array(sbanks_smoother.smooth(y_noisy.tolist()))
+        sbanks_result = sbanks_smoother.smooth(y_noisy)
 
         # Reference implementation
         ref_smoother = we.WhittakerSmoother(lmbda=lmbda, order=order, data_length=n)
@@ -90,10 +90,8 @@ class TestNonUniformSpacing:
         lmbda = 1.0
 
         # sbanks implementation with x_input
-        sbanks_smoother = WhittakerSmoother(
-            lmbda=lmbda, order=2, data_length=n, x_input=x.tolist()
-        )
-        sbanks_result = np.array(sbanks_smoother.smooth(y_noisy.tolist()))
+        sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=2, data_length=n, x_input=x)
+        sbanks_result = sbanks_smoother.smooth(y_noisy)
 
         # Reference implementation with x_input
         ref_smoother = we.WhittakerSmoother(
@@ -125,7 +123,7 @@ class TestEdgeCases:
         lmbda = 1e2
 
         sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
-        sbanks_result = np.array(sbanks_smoother.smooth(y.tolist()))
+        sbanks_result = sbanks_smoother.smooth(y)
 
         ref_smoother = we.WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
         ref_result = np.array(ref_smoother.smooth(y.tolist()))
@@ -139,7 +137,7 @@ class TestEdgeCases:
         lmbda = 1e4
 
         sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
-        sbanks_result = np.array(sbanks_smoother.smooth(y.tolist()))
+        sbanks_result = sbanks_smoother.smooth(y)
 
         ref_smoother = we.WhittakerSmoother(lmbda=lmbda, order=2, data_length=n)
         ref_result = np.array(ref_smoother.smooth(y.tolist()))
@@ -154,7 +152,7 @@ class TestEdgeCases:
         y = np.random.randn(n)
 
         sbanks_smoother = WhittakerSmoother(lmbda=0.0, order=2, data_length=n)
-        sbanks_result = np.array(sbanks_smoother.smooth(y.tolist()))
+        sbanks_result = sbanks_smoother.smooth(y)
 
         ref_smoother = we.WhittakerSmoother(lmbda=0.0, order=2, data_length=n)
         ref_result = np.array(ref_smoother.smooth(y.tolist()))
@@ -189,7 +187,7 @@ class TestSpeedBenchmarks:
         sbanks_smoother = WhittakerSmoother(lmbda=lmbda, order=order, data_length=n)
         start = time.perf_counter()
         for _ in range(n_runs):
-            sbanks_smoother.smooth(y.tolist())
+            sbanks_smoother.smooth(y)
         sbanks_smooth_time = (time.perf_counter() - start) / n_runs * 1000
 
         # Benchmark reference initialization

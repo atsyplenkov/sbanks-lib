@@ -26,7 +26,7 @@ class TestWhittakerSmoother:
         y_noisy = y_true + 0.3 * np.random.randn(n)
 
         smoother = WhittakerSmoother(lmbda=1e3, order=2, data_length=n)
-        y_smooth = np.array(smoother.smooth(y_noisy.tolist()))
+        y_smooth = smoother.smooth(y_noisy)
 
         # Smoothed signal should be closer to true signal than noisy signal
         error_noisy = np.mean((y_noisy - y_true) ** 2)
@@ -41,8 +41,8 @@ class TestWhittakerSmoother:
         smoother_low = WhittakerSmoother(lmbda=1e2, order=2, data_length=n)
         smoother_high = WhittakerSmoother(lmbda=1e6, order=2, data_length=n)
 
-        y_low = np.array(smoother_low.smooth(y.tolist()))
-        y_high = np.array(smoother_high.smooth(y.tolist()))
+        y_low = smoother_low.smooth(y)
+        y_high = smoother_high.smooth(y)
 
         # Higher lambda should produce smaller second differences (smoother)
         diff2_low = np.sum(np.diff(y_low, n=2) ** 2)
@@ -56,7 +56,7 @@ class TestWhittakerSmoother:
 
         for order in [1, 2, 3, 4]:
             smoother = WhittakerSmoother(lmbda=1e4, order=order, data_length=n)
-            y_smooth = smoother.smooth(y.tolist())
+            y_smooth = smoother.smooth(y)
             assert len(y_smooth) == n
 
     def test_non_uniform_spacing(self):
@@ -65,10 +65,8 @@ class TestWhittakerSmoother:
         x = np.cumsum(np.random.rand(n))  # Non-uniform spacing
         y = np.sin(x) + 0.1 * np.random.randn(n)
 
-        smoother = WhittakerSmoother(
-            lmbda=1e3, order=2, data_length=n, x_input=x.tolist()
-        )
-        y_smooth = smoother.smooth(y.tolist())
+        smoother = WhittakerSmoother(lmbda=1e3, order=2, data_length=n, x_input=x)
+        y_smooth = smoother.smooth(y)
         assert len(y_smooth) == n
 
     def test_small_data(self):
@@ -76,7 +74,7 @@ class TestWhittakerSmoother:
         for n in [3, 5, 10]:
             y = np.random.randn(n)
             smoother = WhittakerSmoother(lmbda=1e2, order=2, data_length=n)
-            y_smooth = smoother.smooth(y.tolist())
+            y_smooth = smoother.smooth(y)
             assert len(y_smooth) == n
 
     def test_zero_lambda_identity(self):
@@ -84,7 +82,7 @@ class TestWhittakerSmoother:
         n = 20
         y = np.random.randn(n)
         smoother = WhittakerSmoother(lmbda=0.0, order=2, data_length=n)
-        y_smooth = np.array(smoother.smooth(y.tolist()))
+        y_smooth = smoother.smooth(y)
         np.testing.assert_allclose(y_smooth, y, rtol=1e-10)
 
     def test_constant_signal_unchanged(self):
@@ -92,14 +90,14 @@ class TestWhittakerSmoother:
         n = 50
         y = np.ones(n) * 5.0
         smoother = WhittakerSmoother(lmbda=1e4, order=2, data_length=n)
-        y_smooth = np.array(smoother.smooth(y.tolist()))
+        y_smooth = smoother.smooth(y)
         np.testing.assert_allclose(y_smooth, y, rtol=1e-10)
 
     def test_smooth_returns_ndarray(self):
         n = 20
         y = np.random.randn(n)
         smoother = WhittakerSmoother(lmbda=1e3, order=2, data_length=n)
-        y_smooth = smoother.smooth(y.tolist())
+        y_smooth = smoother.smooth(y)
         assert isinstance(y_smooth, np.ndarray)
 
     def test_nonuniform_rejects_duplicate_x(self):

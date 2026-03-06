@@ -14,7 +14,7 @@ import numpy as np
 import pytest
 from hypothesis import given, assume, settings, strategies as st
 
-from sbanks_core.whittaker import WhittakerSmoother
+from sbanks.whittaker import WhittakerSmoother
 from tests.conftest import signal_data, smoother_with_data
 
 

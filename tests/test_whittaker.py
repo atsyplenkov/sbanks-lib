@@ -3,7 +3,7 @@
 
 import numpy as np
 import pytest
-from sbanks_core.whittaker import WhittakerSmoother
+from sbanks.whittaker import WhittakerSmoother
 
 
 class TestWhittakerSmoother:

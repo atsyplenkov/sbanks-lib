@@ -3,7 +3,7 @@
 
 import numpy as np
 import pytest
-from sbanks_core.geometry import (
+from sbanks.geometry import (
     haversine_distance,
     calculate_cumulative_distances,
     apply_antihook_padding,
@@ -92,7 +92,7 @@ class TestCalculateCumulativeDistances:
                 "haversine_distance should not be called in geographic mode"
             )
 
-        monkeypatch.setattr("sbanks_core.geometry.haversine_distance", _fail_if_called)
+        monkeypatch.setattr("sbanks.geometry.haversine_distance", _fail_if_called)
 
         x = np.array([0.0, 0.1, 0.2, 0.3])
         y = np.array([0.0, 0.0, 0.0, 0.0])
@@ -230,7 +230,7 @@ class TestResampleAndSmooth:
         x = np.array([0.0, 1.0, 2.0])
         y = np.array([0.0, 0.0, 0.0])
 
-        monkeypatch.setattr("sbanks_core.geometry.splprep", fail_splprep)
+        monkeypatch.setattr("sbanks.geometry.splprep", fail_splprep)
 
         with pytest.warns(
             RuntimeWarning,
@@ -256,8 +256,8 @@ class TestResampleAndSmooth:
         def fake_splev(u_new, tck):
             return np.linspace(0.0, 1.0, len(u_new)), np.linspace(0.0, 1.0, len(u_new))
 
-        monkeypatch.setattr("sbanks_core.geometry.splprep", fake_splprep)
-        monkeypatch.setattr("sbanks_core.geometry.splev", fake_splev)
+        monkeypatch.setattr("sbanks.geometry.splprep", fake_splprep)
+        monkeypatch.setattr("sbanks.geometry.splev", fake_splev)
 
         x = np.array([0.0, 5.0, 10.0, 15.0])
         y = np.array([0.0, 1.0, 0.0, 1.0])
@@ -281,10 +281,10 @@ class TestResampleAndSmooth:
             return np.linspace(0.0, 1.0, len(u_new)), np.linspace(0.0, 1.0, len(u_new))
 
         monkeypatch.setattr(
-            "sbanks_core.geometry.calculate_cumulative_distances", fake_cumulative
+            "sbanks.geometry.calculate_cumulative_distances", fake_cumulative
         )
-        monkeypatch.setattr("sbanks_core.geometry.splprep", fake_splprep)
-        monkeypatch.setattr("sbanks_core.geometry.splev", fake_splev)
+        monkeypatch.setattr("sbanks.geometry.splprep", fake_splprep)
+        monkeypatch.setattr("sbanks.geometry.splev", fake_splev)
 
         x = np.array([0.0, 1.0])
         y = np.array([0.0, 0.0])

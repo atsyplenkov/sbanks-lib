@@ -5,7 +5,7 @@ import pytest
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import arrays
 
-from sbanks_core.whittaker import WhittakerSmoother
+from sbanks.whittaker import WhittakerSmoother
 
 
 @pytest.fixture(autouse=True)

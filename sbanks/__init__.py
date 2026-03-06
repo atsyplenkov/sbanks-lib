@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Sbanks Core Library - Pure Python geometry smoothing algorithms.
+Sbanks Library - Pure Python geometry smoothing algorithms.
 
 This library provides GIS-agnostic implementations of:
 - Whittaker-Eilers smoother

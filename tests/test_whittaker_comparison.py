@@ -11,7 +11,7 @@ import time
 import numpy as np
 import pytest
 
-from sbanks_core.whittaker import WhittakerSmoother
+from sbanks.whittaker import WhittakerSmoother
 
 # Skip all tests if whittaker-eilers is not installed
 we = pytest.importorskip("whittaker_eilers")

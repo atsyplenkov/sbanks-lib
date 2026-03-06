@@ -3,12 +3,12 @@
 
 import numpy as np
 import pytest
-from sbanks_core.geometry import (
+from sbanks.geometry import (
     densify_geometry,
     resample_and_smooth,
     snap_endpoints,
 )
-from sbanks_core.savgol import (
+from sbanks.savgol import (
     smooth_open_geometry,
     smooth_closed_geometry,
 )
@@ -103,7 +103,7 @@ class TestSmoothOpenGeometry:
                 "savgol_filter should not be called for invalid polyorder"
             )
 
-        monkeypatch.setattr("sbanks_core.savgol.savgol_filter", _fail_if_called)
+        monkeypatch.setattr("sbanks.savgol.savgol_filter", _fail_if_called)
         x = np.linspace(0, 10, 21)
         y = np.sin(x)
 
@@ -131,7 +131,7 @@ class TestSmoothOpenGeometry:
         def _fail_if_called(*args, **kwargs):
             raise AssertionError("densify_geometry should not run for invalid params")
 
-        monkeypatch.setattr("sbanks_core.savgol.densify_geometry", _fail_if_called)
+        monkeypatch.setattr("sbanks.savgol.densify_geometry", _fail_if_called)
 
         x = np.array([0.0, 100.0])
         y = np.array([0.0, 0.0])
@@ -228,7 +228,7 @@ class TestSmoothClosedGeometry:
                 "savgol_filter should not be called for invalid polyorder"
             )
 
-        monkeypatch.setattr("sbanks_core.savgol.savgol_filter", _fail_if_called)
+        monkeypatch.setattr("sbanks.savgol.savgol_filter", _fail_if_called)
         theta = np.linspace(0, 2 * np.pi, 24, endpoint=False)
         x = np.cos(theta)
         y = np.sin(theta)
@@ -247,7 +247,7 @@ class TestSmoothClosedGeometry:
         def _fail_if_called(*args, **kwargs):
             raise AssertionError("densify_geometry should not run for invalid params")
 
-        monkeypatch.setattr("sbanks_core.savgol.densify_geometry", _fail_if_called)
+        monkeypatch.setattr("sbanks.savgol.densify_geometry", _fail_if_called)
 
         x = np.array([0.0, 100.0, 100.0, 0.0])
         y = np.array([0.0, 0.0, 100.0, 100.0])

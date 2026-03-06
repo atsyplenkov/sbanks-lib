@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2026-01-23
 
 ### Added
-- Initial release of sbanks-core library
+- Initial release of sbanks library
 - Whittaker-Eilers smoothing algorithm implementation
 - Savitzky-Golay filter with custom padding logic
 - Geometry utilities:

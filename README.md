@@ -1,12 +1,12 @@
-# Sbanks Core
+# Sbanks
 
 <p align="center">
      <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
-     <a href="https://github.com/atsyplenkov/sbanks-lib/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/atsyplenkov/sbanks-lib/ci.yml?style=flat&labelColor=1C2C2E&color=88AB26&logo=GitHub%20Actions&logoColor=white&label=CI"></a>
-     <a href="https://pypi.org/project/sbanks-core/"><img src="https://img.shields.io/pypi/v/sbanks-core?style=flat&labelColor=1C2C2E&color=88AB26&logo=Python&logoColor=white"></a>
+     <a href="https://github.com/atsyplenkov/sbanks/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/atsyplenkov/sbanks/ci.yml?style=flat&labelColor=1C2C2E&color=88AB26&logo=GitHub%20Actions&logoColor=white&label=CI"></a>
+     <a href="https://pypi.org/project/sbanks/"><img src="https://img.shields.io/pypi/v/sbanks?style=flat&labelColor=1C2C2E&color=88AB26&logo=Python&logoColor=white"></a>
 </p>
 
-A pure Python library providing GIS-agnostic implementations of geometry smoothing algorithms. It serves as backend for the [sbanks](https://github.com/atsyplenkov/sbanks-tools) QGIS and ArcGIS plugins, offering Whittaker-Eilers and Savitzky-Golay filtering with optional spline resampling.
+A pure Python library providing GIS-agnostic implementations of geometry smoothing algorithms. It serves as backend for the [sbanks](https://github.com/atsyplenkov/sbanks-plugins) QGIS and ArcGIS plugins, offering Whittaker-Eilers and Savitzky-Golay filtering with optional spline resampling.
 
 > Placeholder for performance plot or demo
 
@@ -14,18 +14,18 @@ A pure Python library providing GIS-agnostic implementations of geometry smoothi
 
 ### From PyPI
 ```bash
-pip install sbanks-core
+pip install sbanks
 ```
 
 ### Build from source
 1. Clone the repository:
 ```bash
-git clone https://github.com/atsyplenkov/sbanks-lib.git
+git clone https://github.com/atsyplenkov/sbanks.git
 ```
 
 2. Install using pip:
 ```bash
-cd sbanks-lib
+cd sbanks
 pip install .
 ```
 
@@ -33,7 +33,7 @@ pip install .
 
 ```python
 import numpy as np
-from sbanks_core import WhittakerSmoother, resample_and_smooth
+from sbanks import WhittakerSmoother, resample_and_smooth
 
 # Sample coordinates
 x = np.array([0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0])
